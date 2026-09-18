@@ -7,7 +7,7 @@ import StoreKit
 /// `removeAdsProductID` below before this can load a real product or accept payment.
 @MainActor
 final class PurchaseManager: ObservableObject {
-    static let removeAdsProductID = "com.dina.ingredientfinder.removeads"
+    static let removeAdsProductID = "com.dina.labellens.removeads"
 
     @Published private(set) var isAdRemovalPurchased = false
     @Published private(set) var product: Product?

@@ -147,7 +147,7 @@ swiftc -O Design/AppIconGenerator.swift -o /tmp/icongen && /tmp/icongen AllergyS
 
 The Xcode project itself (target name, scheme) is still called `AllergyScanner` — the
 in-app copy and display name are "LabelLens" and the bundle identifier is
-`com.dina.ingredientfinder`. Rename the project too before shipping if you want full
+`com.dina.labellens`. Rename the project too before shipping if you want full
 consistency (bigger, separate step; it doesn't affect the App Store listing).
 
 ## Ads & in-app purchase
@@ -185,7 +185,7 @@ consistency (bigger, separate step; it doesn't affect the App Store listing).
     `ca-app-pub-3940256099942544/4411468910`
   - **Before release**, replace all three with your real AdMob app ID plus a banner unit
     and an interstitial unit from an AdMob account, and create a matching **non-consumable** IAP in App Store Connect
-    with product ID exactly `com.dina.ingredientfinder.removeads` (or change
+    with product ID exactly `com.dina.labellens.removeads` (or change
     `PurchaseManager.removeAdsProductID` to whatever you use).
 - **SKAdNetwork**: [Info.plist](AllergyScanner/Info.plist) currently declares only
   Google's own `cstr6suwn9.skadnetwork` identifier, which is enough for ads to serve. The
@@ -263,11 +263,11 @@ App Store and the ad units from the constants noted below.
    `Product.products(for:)` returns nothing, so the Remove Ads button will show without a
    price and purchases fail — this is the #1 cause of "my IAP doesn't load".
 3. **Create the app record** (App Store Connect → My Apps → +): platform iOS, bundle ID
-   `com.dina.ingredientfinder` (register it under Certificates, Identifiers &
+   `com.dina.labellens` (register it under Certificates, Identifiers &
    Profiles first, or let Xcode do it via automatic signing), SKU can be anything unique.
 4. **Create the In-App Purchase** (the app record → Monetization → In-App Purchases → +):
    - Type: **Non-Consumable**
-   - Product ID: exactly `com.dina.ingredientfinder.removeads` (must match
+   - Product ID: exactly `com.dina.labellens.removeads` (must match
      `PurchaseManager.removeAdsProductID`)
    - Reference name, a display name + description for at least one localization, and a
      price (pick the nearest available price point to €2.90 — Apple's price points are
@@ -367,7 +367,7 @@ Code / project:
 - [ ] (Optional) Add ATT prompt + `NSUserTrackingUsageDescription` for personalized ads
 - [ ] Add `ITSAppUsesNonExemptEncryption = NO` to `Info.plist`
 - [ ] Set `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in the target (currently 1.0 / 1)
-- [ ] Bundle ID is `com.dina.ingredientfinder` — **confirm you're happy with it before the
+- [ ] Bundle ID is `com.dina.labellens` — **confirm you're happy with it before the
       first App Store submission**, because it can never change afterwards (the internal
       project/target name `AllergyScanner` is cosmetic and can be renamed any time)
 - [ ] Bump `currentDisclaimerVersion` in `HomeView.swift` if the disclaimer text changed
@@ -381,7 +381,7 @@ Apple accounts / listing:
 - [ ] Apple Developer Program enrolled
 - [ ] Paid Applications Agreement accepted; bank + tax info complete
 - [ ] App record created with the right bundle ID
-- [ ] Non-consumable IAP `com.dina.ingredientfinder.removeads` created, Ready to Submit,
+- [ ] Non-consumable IAP `com.dina.labellens.removeads` created, Ready to Submit,
       and attached to the first app version
 - [ ] Purchase tested against the real sandbox (scheme StoreKit config = None, sandbox
       tester signed in on the device)
