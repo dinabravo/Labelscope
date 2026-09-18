@@ -3,21 +3,21 @@ import GoogleMobileAds
 
 /// A SwiftUI wrapper around a Google Mobile Ads adaptive banner.
 ///
-/// Uses Google's official TEST ad unit ID (safe to ship in Debug builds — it always fills
-/// with a placeholder ad and never affects your AdMob account). **Replace `adUnitID` with
-/// your real AdMob banner unit ID before submitting a release build**, or ads will keep
-/// serving test creatives in production.
+/// Uses the real AdMob "Home banner" unit. Your own phone must be registered as a test
+/// device (see `AllergyScannerApp`) so it gets test creatives — tapping real ads on your
+/// own app counts as invalid traffic. The ad is only requested once the user has been
+/// through the GDPR consent flow (`AdConsentManager.canRequestAds`).
 struct AdBannerView: UIViewRepresentable {
     /// Reports the loaded ad's actual height back to the caller, since adaptive banners
     /// aren't a fixed size — the caller should apply this as the container's frame height.
     @Binding var height: CGFloat
 
-    private let adUnitID = "ca-app-pub-3940256099942544/2435281174" // Google TEST banner unit ID
+    private let adUnitID = "ca-app-pub-9415344326902270/3516667583" // AdMob: Labelscope → Home banner
 
     func makeUIView(context: Context) -> BannerView {
         let banner = BannerView()
         banner.adUnitID = adUnitID
-        banner.rootViewController = Self.rootViewController()
+        banner.rootViewController = UIApplication.keyRootViewController
         banner.delegate = context.coordinator
         banner.adSize = largeAnchoredAdaptiveBanner(width: UIScreen.main.bounds.width)
         banner.load(Request())
@@ -28,14 +28,6 @@ struct AdBannerView: UIViewRepresentable {
 
     func makeCoordinator() -> Coordinator {
         Coordinator(height: $height)
-    }
-
-    private static func rootViewController() -> UIViewController? {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)?
-            .rootViewController
     }
 
     final class Coordinator: NSObject, BannerViewDelegate {

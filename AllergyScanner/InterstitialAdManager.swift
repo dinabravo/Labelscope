@@ -11,11 +11,11 @@ import UIKit
 /// the first few scanner closes, then only every Nth close *and* only if enough time has
 /// passed since the last one — see the constants below.
 ///
-/// Uses Google's official TEST interstitial unit ID. **Replace `adUnitID` with your real
-/// AdMob interstitial unit ID before submitting a release build.**
+/// Uses the real AdMob "Scanner close" unit. Loads are skipped until the GDPR consent
+/// flow has completed (`AdConsentManager.canRequestAds`).
 @MainActor
 final class InterstitialAdManager: NSObject, ObservableObject {
-    private let adUnitID = "ca-app-pub-3940256099942544/4411468910" // Google TEST interstitial unit ID
+    private let adUnitID = "ca-app-pub-9415344326902270/3927731128" // AdMob: Labelscope → Scanner close
 
     // MARK: Frequency cap
 
@@ -53,7 +53,7 @@ final class InterstitialAdManager: NSObject, ObservableObject {
               closesSinceLastAd >= scansBetweenAds,
               Date().timeIntervalSince(lastShownDate) >= minimumInterval,
               let ad = interstitial,
-              let rootVC = Self.rootViewController()
+              let rootVC = UIApplication.keyRootViewController
         else { return }
 
         interstitial = nil
@@ -65,7 +65,7 @@ final class InterstitialAdManager: NSObject, ObservableObject {
 
     /// Loads the next interstitial in the background so it's ready to present instantly.
     private func preload() {
-        guard !isLoading, interstitial == nil else { return }
+        guard !isLoading, interstitial == nil, AdConsentManager.shared.canRequestAds else { return }
         isLoading = true
         Task {
             defer { isLoading = false }
@@ -79,13 +79,6 @@ final class InterstitialAdManager: NSObject, ObservableObject {
         }
     }
 
-    private static func rootViewController() -> UIViewController? {
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)?
-            .rootViewController
-    }
 }
 
 // MARK: - FullScreenContentDelegate

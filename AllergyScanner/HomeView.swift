@@ -12,6 +12,7 @@ struct HomeView: View {
     @StateObject private var scanner = TextScannerService()
     @StateObject private var purchaseManager = PurchaseManager()
     @StateObject private var interstitialAds = InterstitialAdManager()
+    @ObservedObject private var adConsent = AdConsentManager.shared
 
     @State private var newAllergen = ""
     @State private var showingScanner = false
@@ -52,7 +53,9 @@ struct HomeView: View {
                     footerLinks
                         .padding(.vertical, 10)
 
-                    if !purchaseManager.isAdRemovalPurchased {
+                    // The banner isn't even created until the GDPR consent flow has
+                    // finished — creating it would fire an ad request.
+                    if !purchaseManager.isAdRemovalPurchased && adConsent.canRequestAds {
                         AdBannerView(height: $adHeight)
                             .frame(height: adHeight)
                     }
@@ -76,6 +79,8 @@ struct HomeView: View {
             DisclaimerView {
                 acceptedDisclaimerVersion = currentDisclaimerVersion
                 showingOnboardingDisclaimer = false
+                // Consent form is next in line, now that the disclaimer is out of the way.
+                Task { await adConsent.gatherConsent() }
             }
         }
         // Read-only, dismissible re-read of the same terms.
@@ -85,6 +90,8 @@ struct HomeView: View {
         .onAppear {
             if acceptedDisclaimerVersion < currentDisclaimerVersion {
                 showingOnboardingDisclaimer = true
+            } else {
+                Task { await adConsent.gatherConsent() }
             }
         }
         .alert(
@@ -104,8 +111,17 @@ struct HomeView: View {
 
     private var footerLinks: some View {
         VStack(spacing: 6) {
-            Button("Disclaimer & Limitations") {
-                showingDisclaimer = true
+            HStack(spacing: 16) {
+                Button("Disclaimer & Limitations") {
+                    showingDisclaimer = true
+                }
+                // Google requires an always-reachable way to revisit GDPR consent for
+                // users who were shown the form.
+                if adConsent.isPrivacyOptionsRequired {
+                    Button("Privacy Settings") {
+                        Task { await adConsent.presentPrivacyOptions() }
+                    }
+                }
             }
             .foregroundColor(.secondary)
 

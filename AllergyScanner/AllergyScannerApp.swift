@@ -6,14 +6,11 @@
 //
 
 import SwiftUI
-import GoogleMobileAds
 
 @main
 struct AllergyScannerApp: App {
-    init() {
-        MobileAds.shared.start()
-    }
-
+    // The Google Mobile Ads SDK is deliberately *not* started here. AdConsentManager
+    // starts it once the UMP consent flow has run (see HomeView), as Google requires.
     var body: some Scene {
         WindowGroup {
             HomeView()

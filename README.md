@@ -124,6 +124,7 @@ AllergyScanner/
   TextScannerService.swift    — camera capture + Vision OCR + match pipeline
   AllergenMatcher.swift       — keyword alias dictionary + phrase matching
   DisclaimerView.swift        — disclaimer screen
+  AdConsentManager.swift      — GDPR consent flow (UMP); starts the Ads SDK, gates ad loads
   AdBannerView.swift          — SwiftUI wrapper around a Google Mobile Ads banner
   InterstitialAdManager.swift — throttled full-screen ad shown when closing the scanner
   PurchaseManager.swift       — StoreKit 2 manager for the "Remove Ads" purchase
@@ -176,25 +177,26 @@ consistency (bigger, separate step; it doesn't affect the App Store listing).
   price itself is never hardcoded in the app — `PurchaseManager` just displays whatever
   `product.displayPrice` the App Store returns, so setting the real price is done once,
   in App Store Connect, when you create the IAP (see below). Target price: €2.90.
-- **Test IDs currently wired in** — these work out of the box but are Google's public
-  sample IDs, not yours:
+- **Real AdMob IDs are wired in** (AdMob app "Labelscope"):
   - `GADApplicationIdentifier` in [Info.plist](AllergyScanner/Info.plist):
-    `ca-app-pub-3940256099942544~1458002511`
-  - Banner ad unit ID in [AdBannerView.swift](AllergyScanner/AdBannerView.swift):
-    `ca-app-pub-3940256099942544/2435281174`
-  - Interstitial ad unit ID in
+    `ca-app-pub-9415344326902270~9699379664`
+  - "Home banner" unit in [AdBannerView.swift](AllergyScanner/AdBannerView.swift):
+    `ca-app-pub-9415344326902270/3516667583`
+  - "Scanner close" interstitial unit in
     [InterstitialAdManager.swift](AllergyScanner/InterstitialAdManager.swift):
-    `ca-app-pub-3940256099942544/4411468910`
-  - **Before release**, replace all three with your real AdMob app ID plus a banner unit
-    and an interstitial unit from an AdMob account, and create a matching **non-consumable** IAP in App Store Connect
+    `ca-app-pub-9415344326902270/3927731128`
+  - Because these are live units, **register every development phone as a test device**
+    — add its hashed ID to `AdTestDevices.identifiers` in
+    [AdConsentManager.swift](AllergyScanner/AdConsentManager.swift) (Debug builds) and in
+    AdMob → Settings → Test devices (Release/TestFlight builds). The Xcode console prints
+    the ID on first run. Tapping real ads in your own app is invalid traffic.
+  - The matching **non-consumable** IAP still has to be created in App Store Connect
     with product ID exactly `com.dina.labellens.removeads` (or change
     `PurchaseManager.removeAdsProductID` to whatever you use).
-- **SKAdNetwork**: [Info.plist](AllergyScanner/Info.plist) currently declares only
-  Google's own `cstr6suwn9.skadnetwork` identifier, which is enough for ads to serve. The
-  SDK logs a warning that ~49 more identifiers are missing — those are for *install
-  attribution* across AdMob's mediated ad networks, not required for ads to display. Add
-  [Google's full recommended list](https://developers.google.com/admob/ios/query-ad-network)
-  if you want fuller attribution reporting later.
+- **SKAdNetwork**: [Info.plist](AllergyScanner/Info.plist) carries Google's full
+  recommended list (50 identifiers, copied from the AdMob iOS quick-start page in
+  September 2026) so install attribution works across Google's buyer networks. Google
+  updates the list occasionally; re-copy it from the quick-start when bumping the SDK.
 - **Testing purchases locally**: [Configuration.storekit](AllergyScanner/Configuration.storekit)
   defines the Remove Ads product locally (priced at €2.90, German/Eurozone storefront, to
   match the intended real price) and is already wired into the shared Xcode scheme (`Run`
@@ -207,10 +209,18 @@ consistency (bigger, separate step; it doesn't affect the App Store listing).
   over HTTP/3 (QUIC) — a known Simulator networking quirk (visible in device logs as
   `nw_connection_copy_connected_local_endpoint_block_invoke` / "Network is down" errors
   on `googleads.g.doubleclick.net`), not an app bug. Ads load fine on a real device.
-- **Not yet implemented**: App Tracking Transparency (ATT) / personalized ads, and a
-  GDPR consent flow (Google's User Messaging Platform, which came along as a transitive
-  dependency of the Ads SDK but isn't wired up). Only non-personalized/contextual ads are
-  served right now, which is simpler and doesn't need either.
+- **GDPR consent (UMP)**: [AdConsentManager.swift](AllergyScanner/AdConsentManager.swift)
+  runs Google's User Messaging Platform flow once per launch, right after the disclaimer
+  is accepted. Nothing ad-related happens before it finishes: the Mobile Ads SDK is
+  started *by* the consent manager (not in the App init), `HomeView` doesn't create the
+  banner until `canRequestAds` is true, and the interstitial skips loads until then. When
+  UMP says the user may change their choice, a "Privacy Settings" link appears next to
+  the disclaimer link. The consent message itself lives in AdMob → Privacy & messaging
+  — if none is published there, the flow fails quietly and the app simply runs ad-free.
+  In Debug builds on a registered test device the EEA flow is forced so the form can be
+  tested from anywhere.
+- **Not yet implemented**: App Tracking Transparency (ATT) / personalized ads. Only
+  non-personalized/contextual ads are served, which is simpler and doesn't need it.
 
 ## Legal / liability
 
@@ -361,28 +371,29 @@ that appears on the App Store listing and hosts `app-ads.txt`.
 
 Code / project:
 
-- [ ] Replace `GADApplicationIdentifier` in `Info.plist` with your real AdMob App ID
-- [ ] Replace `adUnitID` in `AdBannerView.swift` with your real banner unit ID
-- [ ] Replace `adUnitID` in `InterstitialAdManager.swift` with your real interstitial unit ID
-- [ ] Paste Google's full `SKAdNetworkItems` list into `Info.plist`
-- [ ] Implement the UMP (GDPR) consent flow on launch — required for EU ad serving
+- [x] Replace `GADApplicationIdentifier` in `Info.plist` with your real AdMob App ID
+- [x] Replace `adUnitID` in `AdBannerView.swift` with your real banner unit ID
+- [x] Replace `adUnitID` in `InterstitialAdManager.swift` with your real interstitial unit ID
+- [x] Paste Google's full `SKAdNetworkItems` list into `Info.plist`
+- [x] Implement the UMP (GDPR) consent flow on launch — required for EU ad serving
 - [ ] (Optional) Add ATT prompt + `NSUserTrackingUsageDescription` for personalized ads
-- [ ] Add `ITSAppUsesNonExemptEncryption = NO` to `Info.plist`
+- [x] Add `ITSAppUsesNonExemptEncryption = NO` to `Info.plist`
 - [ ] Set `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in the target (currently 1.0 / 1)
-- [ ] Bundle ID is `com.dina.labellens` — **confirm you're happy with it before the
-      first App Store submission**, because it can never change afterwards (the internal
-      project/target name `AllergyScanner` is cosmetic and can be renamed any time)
+- [x] Bundle ID is `com.dina.labellens` — confirmed and registered in App Store Connect
+      (the internal project/target name `AllergyScanner` is cosmetic and can be renamed
+      any time)
 - [ ] Bump `currentDisclaimerVersion` in `HomeView.swift` if the disclaimer text changed
-- [ ] Register your test phone as an AdMob test device before running with real unit IDs
+- [ ] Register your test phone as an AdMob test device (`AdTestDevices.identifiers` +
+      AdMob → Settings → Test devices) before running with real unit IDs
 - [ ] Verify on a real device: scanner boxes land on the right words, banner loads,
       interstitial appears on the 5th scanner close, Remove Ads hides both (banner +
       interstitial), Restore Purchases works after reinstall
 
 Apple accounts / listing:
 
-- [ ] Apple Developer Program enrolled
+- [x] Apple Developer Program enrolled
 - [ ] Paid Applications Agreement accepted; bank + tax info complete
-- [ ] App record created with the right bundle ID
+- [x] App record created with the right bundle ID
 - [ ] Non-consumable IAP `com.dina.labellens.removeads` created, Ready to Submit,
       and attached to the first app version
 - [ ] Purchase tested against the real sandbox (scheme StoreKit config = None, sandbox
@@ -397,8 +408,8 @@ Apple accounts / listing:
 
 AdMob:
 
-- [ ] AdMob account created; payments profile + tax + identity verification complete
-- [ ] App added; banner + interstitial ad units created
+- [ ] AdMob account created ✓; payments profile + tax + identity verification complete
+- [x] App added; banner + interstitial ad units created
 - [ ] GDPR message created under Privacy & messaging
 - [ ] `app-ads.txt` hosted on the marketing-URL website
 - [ ] After the app is live: link the App Store listing to the AdMob app (verify it)

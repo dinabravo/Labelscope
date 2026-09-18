@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AD1A2B3C4D5E6F708090A0B2 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = AD1A2B3C4D5E6F708090A0B1 /* GoogleMobileAds */; };
+		AD1A2B3C4D5E6F708090A0B5 /* UserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = AD1A2B3C4D5E6F708090A0B4 /* UserMessagingPlatform */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD1A2B3C4D5E6F708090A0B2 /* GoogleMobileAds in Frameworks */,
+				AD1A2B3C4D5E6F708090A0B5 /* UserMessagingPlatform in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 			name = AllergyScanner;
 			packageProductDependencies = (
 				AD1A2B3C4D5E6F708090A0B1 /* GoogleMobileAds */,
+				AD1A2B3C4D5E6F708090A0B4 /* UserMessagingPlatform */,
 			);
 			productName = AllergyScanner;
 			productReference = 36615E9E2DF8570C0021F9E9 /* AllergyScanner.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				AD1A2B3C4D5E6F708090A0B0 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				AD1A2B3C4D5E6F708090A0B3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 36615E9F2DF8570C0021F9E9 /* Products */;
@@ -360,6 +364,14 @@
 				minimumVersion = 13.0.0;
 			};
 		};
+		AD1A2B3C4D5E6F708090A0B3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -367,6 +379,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AD1A2B3C4D5E6F708090A0B0 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		AD1A2B3C4D5E6F708090A0B4 /* UserMessagingPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD1A2B3C4D5E6F708090A0B3 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			productName = GoogleUserMessagingPlatform;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
