@@ -1,4 +1,4 @@
-// AppIconGenerator.swift — renders the LabelLens app icon (light / dark / tinted variants)
+// AppIconGenerator.swift — renders the Labelscope app icon (light / dark / tinted variants)
 // as 1024x1024 PNGs with CoreGraphics, so the icon can be tweaked in code and regenerated.
 //
 // Regenerate (from the repo root):

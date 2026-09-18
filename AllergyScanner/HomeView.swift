@@ -133,7 +133,7 @@ struct HomeView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("LabelLens")
+            Text("Labelscope")
                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
             Text("Add the words you want to find on labels")
                 .font(.subheadline)

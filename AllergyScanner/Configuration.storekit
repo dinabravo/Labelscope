@@ -10,7 +10,7 @@
       "internalID" : "6F1A2B3C4D5E6F71",
       "localizations" : [
         {
-          "description" : "Removes ads from LabelLens.",
+          "description" : "Removes ads from Labelscope.",
           "displayName" : "Remove Ads",
           "locale" : "en_US"
         }

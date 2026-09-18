@@ -17,7 +17,7 @@ struct DisclaimerView: View {
                 // at .subheadline, so the whole thing fits on one screen on most iPhones.
                 VStack(alignment: .leading, spacing: 14) {
                     Text("""
-                    LabelLens is a convenience tool. It searches text captured by your \
+                    Labelscope is a convenience tool. It searches text captured by your \
                     camera for the exact words you've added, using on-device text recognition \
                     (OCR).
                     """)

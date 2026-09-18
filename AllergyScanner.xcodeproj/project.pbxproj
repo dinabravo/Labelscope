@@ -277,7 +277,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AllergyScanner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LabelLens;
+				INFOPLIST_KEY_CFBundleDisplayName = Labelscope;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to scan ingredient labels for the words you're looking for.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -308,7 +308,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AllergyScanner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LabelLens;
+				INFOPLIST_KEY_CFBundleDisplayName = Labelscope;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to scan ingredient labels for the words you're looking for.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

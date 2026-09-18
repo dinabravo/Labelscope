@@ -1,4 +1,4 @@
-# LabelLens
+# Labelscope
 
 A small iOS app (SwiftUI) that uses the camera to scan ingredient labels and flag
 keywords the user has listed. It's a general-purpose keyword finder for ingredient
@@ -103,7 +103,7 @@ match badges.
 
 ## Design
 
-The app is intentionally two screens: **LabelLens** (add/remove the keywords to
+The app is intentionally two screens: **Labelscope** (add/remove the keywords to
 watch for) and the full-screen **Scanner** (camera + live matches). The disclaimer is a
 modal, not a third screen. Shared look-and-feel lives in
 [Theme.swift](AllergyScanner/Theme.swift) — a brand accent color (set in
@@ -146,8 +146,10 @@ swiftc -O Design/AppIconGenerator.swift -o /tmp/icongen && /tmp/icongen AllergyS
 ```
 
 The Xcode project itself (target name, scheme) is still called `AllergyScanner` — the
-in-app copy and display name are "LabelLens" and the bundle identifier is
-`com.dina.labellens`. Rename the project too before shipping if you want full
+in-app copy and display name are "Labelscope" and the bundle identifier is
+`com.dina.labellens` (from an earlier name; kept on purpose since it's invisible to users
+and can never change after the first App Store submission anyway). Rename the project
+too before shipping if you want full
 consistency (bigger, separate step; it doesn't affect the App Store listing).
 
 ## Ads & in-app purchase
